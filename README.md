@@ -31,7 +31,22 @@ On the other hand, detecting check-mate requires:
 
     1. detecting check has happened, and then:
     2. carefully considering EVERY POSSIBLE MOVE by the checked side, 
-        and ensuring none of them will resolve the check. 
+        and ensuring none of them will resolve the check.
+        
+### Detecting Check-mate and validating moves during Check using a temporary board:
+during Check, a move is only valid if it resolves the Check. To calculate whether a move is valid during Check,
+I do the following:
+1. create a copy of the board with its state,
+2. run the move and ignore the restrictions imposed by the Check,
+3. determine whether the player is still under Check after the move
+4. dispose of the copy
+
+If board is still in Check, the move was invalid. Otherwise, its a valid move and it can be applied.
+
+A similar trick is used for detecting Check-mate: in order to determine whether there is a valid
+move that would resolve the Check, I run all the possible moves, each on a copy of the current board
+and determine whether the check was resolved.
+
 
 ### What I did not implement, Chess-wise:
 

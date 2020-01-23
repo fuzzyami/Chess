@@ -45,11 +45,11 @@ class Pawn(AbstractPiece):
             # moving straight - not capturing
             if rubrics[dest_x][dest_y].piece_type == PieceType.PLACEHOLDER:
                 return True
-        elif abs(dest_x - dest_y) == 1:
+        elif abs(dest_x - source_x) == 1:
             # moving diagonally - capturing
             if rubrics[dest_x][dest_y].piece_type != PieceType.PLACEHOLDER:
                 return True
-        raise InvalidMoveException("invalid move for pawn")
+        raise InvalidMoveException("invalid move for pawn (%s, %s -> %s, %s)" % (source_x, source_y, dest_x, dest_y))
 
     def is_attacking(self, attacked_position: Position):
         """returns True if this pawn is attacking the given position"""
@@ -63,59 +63,9 @@ class Pawn(AbstractPiece):
                 return True
         return False
 
-    def list_next_potential_positions(self, rubrics):
+    def list_next_potential_positions(self):
         """returns a list of potential and valid next positions for this piece, ignoring Check-semantics"""
-        # TODO this code needs to be DRYied up.
-        valid_positions = []
-        if self.color == PieceColor.WHITE:
-            # pawn cant move if already at the top:
-            if self.position.y == 7:
-                return valid_positions
-            # there are 3 possible moves for white pawns: up, up-right or up-left.
-
-            # you can only move up if its vacant
-            up = Position(self.x, self.y + 1)
-            if rubrics[up.x, up.y].piece_type == PieceType.PLACEHOLDER:
-                valid_positions.append(up)
-
-            # pawn can only capture right if not at right-most column
-            # and only if there's a piece there and its of the opposite color.
-            if self.x < 7:
-                up_right = Position(self.x + 1, self.y + 1)
-                capture_piece = rubrics[up_right.x, up_right.y]
-                if capture_piece.piece_type != PieceType.PLACEHOLDER and capture_piece.color != self.color:
-                    valid_positions.append(up_right)
-            if self.x > 0:  # and similarly for the left-most column
-                up_left = Position(self.x - 1, self.y + 1)
-                capture_piece = rubrics[up_left.x, up_left.y]
-                if capture_piece.piece_type != PieceType.PLACEHOLDER and capture_piece.color != self.color:
-                    valid_positions.append(up_left)
-
-        else:  # BLACK PAWN
-            # pawn cant move if already at the bottom:
-            if self.position.y == 0:
-                return valid_positions
-            # there are 3 possible moves for black pawns: down (walk) or capture: down-right or down-left.
-
-            # you can only move down if its vacant
-            down = Position(self.x, self.y - 1)
-            if rubrics[down.x, down.y].piece_type == PieceType.PLACEHOLDER:
-                valid_positions.append(down)
-
-            # pawn can only capture right if not at right-most column
-            # and only if there's a piece there and its of the opposite color.
-            if self.x < 7:
-                down_right = Position(self.x + 1, self.y - 1)
-                capture_piece = rubrics[down_right.x, down_right.y]
-                if capture_piece.piece_type != PieceType.PLACEHOLDER and capture_piece.color != self.color:
-                    valid_positions.append(down_right)
-            if self.x > 0:  # and similarly for the left-most column
-                down_left = Position(self.x - 1, self.y - 1)
-                capture_piece = rubrics[down_left.x, down_left.y]
-                if capture_piece.piece_type != PieceType.PLACEHOLDER and capture_piece.color != self.color:
-                    valid_positions.append(down_left)
-
-        return valid_positions
+        raise NotImplementedError("is_attacking is not implemented for Pawn")
 
 
 class Bishop(AbstractPiece):
@@ -241,34 +191,9 @@ class Horse(AbstractPiece):
         dx, dy = abs(self.position.x - attacked_position.x), abs(self.position.y - attacked_position.y)
         return True if dx ** 2 + dy ** 2 == 5 else False
 
-    def list_next_potential_positions(self, rubrics):
+    def list_next_potential_positions(self):
         """returns a list of potential and valid next positions for this piece, ignoring Check-semantics"""
-        valid_positions = []
-        coordinates = [(self.x + 1, self.y + 2),
-                       (self.x - 1, self.y + 2),
-                       (self.x + 1, self.y - 2),
-                       (self.x - 1, self.y - 2),
-                       (self.x + 2, self.y + 1),
-                       (self.x - 2, self.y + 1),
-                       (self.x + 2, self.y - 1),
-                       (self.x - 2, self.y - 1)]
-
-        positions_on_board = []
-        # filter out off-board positions (for horses on the edge of the board)
-        for coordinate in coordinates:
-            try:
-                positions_on_board.append(Position(coordinate[0], coordinate[1]))
-            except Position.InvalidPositionError:
-                pass
-        # filter in vacant positions and positions belonging to the other side
-        for position in positions_on_board:
-            target_piece = rubrics[position.x][position.y]
-            if target_piece.piece_type == PieceType.PLACEHOLDER:
-                valid_positions.append(target_piece)
-            elif target_piece.color != self.color:
-                valid_positions.append(target_piece)
-
-        return valid_positions
+        raise NotImplementedError("is_attacking is not implemented for Horse")
 
 
 class Queen(AbstractPiece):

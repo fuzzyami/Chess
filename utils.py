@@ -1,13 +1,14 @@
-from abc import abstractmethod, ABC
 from enum import Enum
 from threading import Thread
 
 
 class InternalErrorException(Exception):
+    """generic exception for when there's nothing more specific"""
     pass
 
 
 class InvalidMoveException(Exception):
+    """thrown whenever an invalid move is proposed"""
     pass
 
 
@@ -30,7 +31,7 @@ class PieceColor(Enum):
 
 
 class Position:
-    """represents a position on the board"""
+    """represents a valid position on the board"""
 
     class InvalidPositionError(Exception):
         pass
@@ -82,30 +83,13 @@ class Move:
         return self._to_pos
 
 
-class ExternalFunctionTookTooLongException(Exception):
-    pass
-
-def call_timeout(timeout, func, args=(), kwargs={}):
-    if type(timeout) not in [int, float] or timeout <= 0.0:
-        print("Invalid timeout!")
-
-    elif not callable(func):
-        print("{} is not callable!".format(type(func)))
-
-    else:
-        t = ThreadWithReturnValue(target=func, args=args, kwargs=kwargs)
-        t.start()
-        retval = (t.join(timeout))
-
-        if t.is_alive():
-            raise ExternalFunctionTookTooLongException("function too too long to run")
-        else:
-            return retval
-
-
 class ThreadWithReturnValue(Thread):
     """a thread that returns the called function's value on join()"""
     #  Shamelessly stolen and slightly modified from https://stackoverflow.com/a/40344234/1277048
+
+    class ExternalFunctionTookTooLongException(Exception):
+        pass
+
     def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
         Thread.__init__(self, group, target, name, args, kwargs, daemon=daemon)
         self._return = None
@@ -117,3 +101,26 @@ class ThreadWithReturnValue(Thread):
     def join(self, timeout):
         Thread.join(self, timeout=timeout)
         return self._return
+
+
+def call_timeout(timeout, func, args=(), kwargs={}):
+    """runs the given function in a thread and return its result
+        or throws ThreadWithReturnValue.ExternalFunctionTookTooLongException exception
+        if the thread took too long to complete"""
+    if type(timeout) not in [int, float] or timeout <= 0.0:
+        raise InternalErrorException("Invalid timeout!")
+
+    elif not callable(func):
+        raise InternalErrorException("{} is not callable!".format(type(func)))
+
+    else:
+        t = ThreadWithReturnValue(target=func, args=args, kwargs=kwargs)
+        t.start()
+        retval = (t.join(timeout))
+
+        if t.is_alive():
+            raise ThreadWithReturnValue.ExternalFunctionTookTooLongException("function too too long to run")
+        else:
+            return retval
+
+

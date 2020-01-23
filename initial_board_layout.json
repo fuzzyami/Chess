@@ -1,0 +1,37 @@
+{"WHITE": [
+  {"x":0,"y": 1, "name": "P1", "piece_type": "PAWN"},
+  {"x":1,"y": 1, "name": "P2", "piece_type": "PAWN"},
+  {"x":2,"y": 1, "name": "P3", "piece_type": "PAWN"},
+  {"x":3,"y": 1, "name": "P4", "piece_type": "PAWN"},
+  {"x":4,"y": 1, "name": "P5", "piece_type": "PAWN"},
+  {"x":5,"y": 1, "name": "P6", "piece_type": "PAWN"},
+  {"x":6,"y": 1, "name": "P7", "piece_type": "PAWN"},
+  {"x":7,"y": 1, "name": "P8", "piece_type": "PAWN"},
+
+  {"x":0,"y": 0, "name": "RL", "piece_type": "ROOK"},
+  {"x":1,"y": 0, "name": "HL", "piece_type": "HORSE"},
+  {"x":2,"y": 0, "name": "BL", "piece_type": "BISHOP"},
+  {"x":3,"y": 0, "name": "Q", "piece_type": "QUEEN"},
+  {"x":4,"y": 0, "name": "K", "piece_type": "KING"},
+  {"x":5,"y": 0, "name": "BR", "piece_type": "BISHOP"},
+  {"x":6,"y": 0, "name": "HR", "piece_type": "HORSE"},
+  {"x":7,"y": 0, "name": "RR", "piece_type": "ROOK"}
+ ],
+ "BLACK": [
+   {"x":0,"y": 6, "name": "P1", "piece_type": "PAWN"},
+   {"x":1,"y": 6, "name": "P2", "piece_type": "PAWN"},
+   {"x":2,"y": 6, "name": "P3", "piece_type": "PAWN"},
+   {"x":3,"y": 6, "name": "P4", "piece_type": "PAWN"},
+   {"x":4,"y": 6, "name": "P5", "piece_type": "PAWN"},
+   {"x":5,"y": 6, "name": "P6", "piece_type": "PAWN"},
+   {"x":6,"y": 6, "name": "P7", "piece_type": "PAWN"},
+   {"x":7,"y": 6, "name": "P8", "piece_type": "PAWN"},
+
+  {"x":0,"y": 7, "name": "RL", "piece_type": "ROOK"},
+  {"x":1,"y": 7, "name": "HL", "piece_type": "HORSE"},
+  {"x":2,"y": 7, "name": "BL", "piece_type": "BISHOP"},
+  {"x":3,"y": 7, "name": "Q", "piece_type": "QUEEN"},
+  {"x":4,"y": 7, "name": "K", "piece_type": "KING"},
+  {"x":5,"y": 7, "name": "BR", "piece_type": "BISHOP"},
+  {"x":6,"y": 7, "name": "HR", "piece_type": "HORSE"},
+  {"x":7,"y": 7, "name": "RR", "piece_type": "ROOK"}]}

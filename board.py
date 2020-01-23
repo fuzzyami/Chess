@@ -2,10 +2,7 @@
 from abstractPiece import AbstractPiece
 from concretePieces import Pawn, Rook, Horse, Bishop, Queen, King, PlaceHolder
 from utils import InternalErrorException, Position, PieceColor, PieceType, Move, InvalidMoveException
-import logging
-import copy
-
-logger = logging.getLogger()
+import copy, json
 
 
 class Board:
@@ -54,7 +51,7 @@ class Board:
 
         # scan all opposing pawns and horses on the board to see if any of them
         # is attacking the given position. Note: there may be multiple attackers
-        # as allowed by the excercise, I'm not scanning for Checks by other pieces
+        # as allowed by the exercise, I'm not scanning for Checks by other pieces
         potential_attackers = ['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'HL', 'HR']
         attackers = []
         for attacker_name in potential_attackers:
@@ -159,6 +156,10 @@ class Board:
         # note: this approach is deliberately simplistic and does not take into account
         # resolving checkmate by other pieces.
 
+        # no Check-mate if there's no Check
+        if len(self.get_king_attackers()) == 0:
+            return False
+
         king = self._pieces[self._current_side_color]['K']  # should always be there. the king is never removed.
         king_next_positions = king.list_next_potential_positions(self._rubrics)
         if len(king_next_positions) == 0:
@@ -174,86 +175,44 @@ class Board:
                 return False
         return True
 
-    def reset_pieces(self):
-        """Inits the board: places the pieces in their initial positions"""
-        color = PieceColor.WHITE
+    def set_pieces(self, board_layout_filename):
+        """parse the given file into the state of the board"""
+
+        def get_ctor(piece_type_str: str):
+            """gets the ctor function for the given piece type string"""
+            if piece_type_str == "PAWN":
+                return Pawn
+            if piece_type_str == "ROOK":
+                return Rook
+            if piece_type_str == "HORSE":
+                return Horse
+            if piece_type_str == "BISHOP":
+                return Bishop
+            if piece_type_str == "KING":
+                return King
+            if piece_type_str == "QUEEN":
+                return Queen
+
+        def get_instance(klass, *args):
+            return klass(*args)
+
+        board_json = json.loads(open(board_layout_filename).read())
+
         white_pieces = self._pieces[PieceColor.WHITE]
-        for i in range(8):
-            name = 'P%s' % i
-            piece = Pawn(color, Position(i, 1), name)
-            white_pieces[name] = piece
-            self._rubrics[i][1] = piece
-
-        rook_left = Rook(color, Position(0, 0), 'RL')
-        white_pieces[rook_left.name] = rook_left
-        self._rubrics[0][0] = rook_left
-
-        rook_right = Rook(color, Position(7, 0), 'RR')
-        white_pieces[rook_right.name] = rook_right
-        self._rubrics[7][0] = rook_right
-
-        horse_left = Horse(color, Position(1, 0), 'HL')
-        white_pieces[horse_left.name] = horse_left
-        self._rubrics[1][0] = horse_left
-
-        horse_right = Horse(color, Position(6, 0), 'HR')
-        white_pieces[horse_right.name] = horse_right
-        self._rubrics[6][0] = horse_right
-
-        bishop_left = Bishop(color, Position(2, 0), 'BL')
-        white_pieces[bishop_left.name] = bishop_left
-        self._rubrics[2][0] = bishop_left
-
-        bishop_right = Bishop(color, Position(5, 0), 'BR')
-        white_pieces[bishop_right.name] = bishop_right
-        self._rubrics[5][0] = bishop_right
-
-        queen = Queen(color, Position(3, 0), 'Q')
-        white_pieces[queen.name] = queen
-        self._rubrics[3][0] = queen
-
-        king = King(color, Position(4, 0), 'K')
-        white_pieces[king.name] = king
-        self._rubrics[4][0] = king
-
-        color = PieceColor.BLACK
         black_pieces = self._pieces[PieceColor.BLACK]
-        for i in range(8):
-            piece = Pawn(color, Position(i, 6), 'P%s' % i)
-            black_pieces[piece.name] = piece
-            self._rubrics[i][6] = piece
 
-        rook_left = Rook(color, Position(0, 7), 'RL')
-        black_pieces[rook_left.name] = rook_left
-        self._rubrics[0][7] = rook_left
+        for piece_json in board_json['WHITE']:
+            x, y, name, piece_type = int(piece_json['x']), int(piece_json['y']), piece_json['name'], piece_json['piece_type']
+            ctor = get_ctor(piece_type)
+            piece = get_instance(get_ctor(piece_type), PieceColor.WHITE, Position(x, y), name)
+            white_pieces[name] = piece
+            self._rubrics[x][y] = piece
 
-        rook_right = Rook(color, Position(7, 7), 'KR')
-        black_pieces[rook_right.name] = rook_right
-        self._rubrics[7][7] = rook_right
-
-        horse_left = Horse(color, Position(1, 7), 'HL')
-        black_pieces[horse_left.name] = horse_left
-        self._rubrics[1][7] = horse_left
-
-        horse_right = Horse(color, Position(6, 7), 'HR')
-        black_pieces[horse_right.name] = horse_right
-        self._rubrics[6][7] = horse_right
-
-        bishop_left = Bishop(color, Position(2, 7), 'BL')
-        black_pieces[bishop_left.name] = bishop_left
-        self._rubrics[2][7] = bishop_left
-
-        bishop_right = Bishop(color, Position(5, 7), 'BR')
-        black_pieces[bishop_right.name] = bishop_right
-        self._rubrics[5][7] = bishop_right
-
-        queen = Queen(color, Position(3, 7), 'Q')
-        black_pieces[queen.name] = queen
-        self._rubrics[3][7] = queen
-
-        king = King(color, Position(4, 7), 'K')
-        black_pieces[king.name] = king
-        self._rubrics[4][7] = king
+        for piece_json in board_json['BLACK']:
+            x, y, name, piece_type = int(piece_json['x']), int(piece_json['y']), piece_json['name'], piece_json['piece_type']
+            piece = get_ctor(piece_type)(PieceColor.BLACK, Position(x, y), name)
+            black_pieces[name] = piece
+            self._rubrics[x][y] = piece
 
     def print(self):
         """Prints a crude representation of the game board"""
@@ -278,15 +237,3 @@ class Board:
             self._removed_pieces[PieceColor.WHITE][key].piece_type,
             self._removed_pieces[PieceColor.WHITE][key].name)
                   )
-
-        # for key in self._pieces[PieceColor.BLACK].keys():
-        # print('black piece: %s -> %s %s %s' % (key, self._pieces[PieceColor.BLACK][key].position.to_str(),
-        #                                       self._pieces[PieceColor.BLACK][key].piece_type,
-        #                                       self._pieces[PieceColor.BLACK][key].name)
-        #      )
-
-        # for key in self._pieces[PieceColor.WHITE].keys():
-        # print('white piece: %s -> %s %s %s' % (key, self._pieces[PieceColor.WHITE][key].position.to_str(),
-        #                                       self._pieces[PieceColor.WHITE][key].piece_type,
-        #                                       self._pieces[PieceColor.WHITE][key].name)
-        #      )
