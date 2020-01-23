@@ -1,7 +1,3 @@
-README for the Armis Chess Challenge
-
-###### Intro:
-
 This repo contains a simplified Chess simulation I wrote for Armis as part of my job interview process. 
 The task at hand was to write a Chess simulator that would receive two players and their respective moves,
 and would determine which of them has won.
@@ -34,9 +30,10 @@ validating a a move is not a simple task, but its a fairly closed problem:
 On the other hand, detecting check-mate requires:
 
     1. detecting check has happened, and then:
-    2. carefully considering EVERY POSSIBLE MOVE by the checked side, and ensuring none of them will resolve the check. 
+    2. carefully considering EVERY POSSIBLE MOVE by the checked side, 
+        and ensuring none of them will resolve the check. 
 
-###### What I did not implement, Chess-wise:
+### What I did not implement, Chess-wise:
 
 I did not implement all the rules of check, but rather, a limited version of the logic:
 * crowning, castling and 'en passent' were not implemented.
@@ -46,7 +43,7 @@ I did not implement all the rules of check, but rather, a limited version of the
 * check-mate detection is limited to the King's options, only. In other words, if the king is checked
 but has no way to resolve the check itself, its check-mate, even if another piece could have resolved it.
 
-######  OOP considerations:
+### OOP considerations:
 This is a classic OOP problem. Modelling the various pieces naturally lends itself to the following:
 * an abstract piece with color, position, and type (like King, Queen etc)
 * a set of concrete pieces, each with its specific movement rules.
@@ -68,6 +65,15 @@ I added a dictionary that maps (for each side) the list of pieces that are still
 I also added a dictionary for the pieces that were removed and under some scenarios, it makes sense
 to have a list of previous moves.
 
-######  Malicious code considerations:
+### Malicious code considerations:
 When getting the next move by a player, I chose to call that function in a separate thread and limit its run time with
-a timeout. If the player does not return the move within 1 second, that thread is stopped.   
+a timeout. If the player does not return the move within 1 second, that thread is stopped.  
+
+### Things I'd do differently, the next time:
+To correctly handle check-make, I would need to consider all the pieces on the board (which I dont do now).
+It would make sense to compute, for each piece, at every turn, the following: 
+    
+    * list of pieces under attack by that piece
+    * list of coordinates that can be moved to, by that piece. 
+
+this is computationally heavy, though. 
