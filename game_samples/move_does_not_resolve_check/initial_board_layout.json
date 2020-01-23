@@ -1,0 +1,21 @@
+{"WHITE": [
+
+  {"x":0,"y": 0, "name": "RL", "piece_type": "ROOK"},
+  {"x":1,"y": 0, "name": "HL", "piece_type": "HORSE"},
+  {"x":2,"y": 0, "name": "BL", "piece_type": "BISHOP"},
+  {"x":3,"y": 0, "name": "Q", "piece_type": "QUEEN"},
+  {"x":4,"y": 0, "name": "K", "piece_type": "KING"},
+  {"x":5,"y": 0, "name": "BR", "piece_type": "BISHOP"},
+  {"x":6,"y": 0, "name": "HR", "piece_type": "HORSE"},
+  {"x":7,"y": 0, "name": "RR", "piece_type": "ROOK"}
+ ],
+ "BLACK": [
+  {"x":0,"y": 6, "name": "P1", "piece_type": "PAWN"},
+  {"x":0,"y": 7, "name": "RL", "piece_type": "ROOK"},
+  {"x":3,"y": 2, "name": "HL", "piece_type": "HORSE"},
+  {"x":2,"y": 7, "name": "BL", "piece_type": "BISHOP"},
+  {"x":3,"y": 7, "name": "Q", "piece_type": "QUEEN"},
+  {"x":4,"y": 7, "name": "K", "piece_type": "KING"},
+  {"x":5,"y": 7, "name": "BR", "piece_type": "BISHOP"},
+  {"x":5,"y": 2, "name": "HR", "piece_type": "HORSE"},
+  {"x":7,"y": 7, "name": "RR", "piece_type": "ROOK"}]}

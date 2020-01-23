@@ -26,10 +26,17 @@ class Board:
     def get_board_copy(self):
         """returns a copy of this board"""
         board_copy = Board()
-        board_copy._rubrics = copy.deepcopy(self._rubrics)
-        board_copy._pieces = copy.deepcopy(self._pieces)
         board_copy._current_side_color = self._current_side_color
         board_copy._other_side_color = self._other_side_color
+        board_copy._rubrics = copy.deepcopy(self._rubrics)
+
+        # populate the dict with the copies of the objects:
+        for x in range(8):
+            for y in range(8):
+                piece = board_copy._rubrics[x][y]
+                if piece.piece_type != PieceType.PLACEHOLDER:
+                    board_copy._pieces[piece.color][piece.name] = piece
+
         return board_copy
 
     def switch_turns(self):
@@ -128,7 +135,7 @@ class Board:
             # and then determine if we're still in check afterwards
             board_copy = self.get_board_copy()
             board_copy.move_piece(move, ignore_check=True)
-            if len(board_copy.get_attackers(self._other_side_color, move.to_pos)) > 0:
+            if len(board_copy.get_king_attackers()) > 0:
                 # the move did not resolve the check, so it wasnt valid:
                 raise InvalidMoveException("move failed to resolve Check")
 
@@ -157,7 +164,8 @@ class Board:
         # resolving checkmate by other pieces.
 
         # no Check-mate if there's no Check
-        if len(self.get_king_attackers()) == 0:
+        king_attackers = self.get_king_attackers()
+        if len(king_attackers) == 0:
             return False
 
         king = self._pieces[self._current_side_color]['K']  # should always be there. the king is never removed.

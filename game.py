@@ -63,6 +63,14 @@ class Game:
         """runs the game until its conclusion or exception"""
         try:
             while self.game_state == Game.State.ONGOING:
+
+                # detect game over conditions for current color
+                if self._board.detect_checkmate():
+                    if self._board.current_player_color == PieceColor.WHITE:
+                        self._game_state = Game.State.BLACK_WON
+                    else:
+                        self._game_state = Game.State.WHITE_WON
+
                 # get the next move from the current player:
                 move = get_next_move(self.current_player.next_move)
                 # apply the move onto the board
@@ -73,12 +81,7 @@ class Game:
                 self._board.switch_turns()
                 self.switch_players()
 
-                # detect game over conditions for current color
-                if self._board.detect_checkmate():
-                    if self._board.current_player_color == PieceColor.WHITE:
-                        self._game_state = Game.State.BLACK_WON
-                    else:
-                        self._game_state = Game.State.WHITE_WON
+
         except Exception as e:
             print(e)
             self._game_state = Game.State.BORKED

@@ -1,0 +1,1 @@
+the white king is in check by 2 black horses. it can flee, but the player chose to move unrelated piece, which is invalid
