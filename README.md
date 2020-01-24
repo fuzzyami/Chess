@@ -85,7 +85,7 @@ When getting the next move by a player, I chose to call that function in a separ
 a timeout. If the player does not return the move within 1 second, that thread is stopped.  
 
 ### Things I'd do differently, the next time:
-To correctly handle check-make, I would need to consider all the pieces on the board (which I dont do now).
+To correctly handle check-mate, I would need to consider all the pieces on the board (which I dont do now).
 It would make sense to compute, for each piece, at every turn, the following: 
     
     * list of pieces under attack by that piece
