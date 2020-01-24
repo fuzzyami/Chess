@@ -66,7 +66,7 @@ This is a classic OOP problem. Modelling the various pieces naturally lends itse
 * "empty" rubrics hold a special "Placeholder" piece.
 
 the above is sufficient to effectively determine whether a move is valid, but is NOT sufficient to 
-efficiently determine whether a check-make has happened. For that you need to have reverse lookup on the pieces,
+efficiently determine whether a check-mate has happened. For that you need to have reverse lookup on the pieces,
 or else you need to scan the entire board on every move for the right pieces. To avoid that, 
 I added a dictionary that maps (for each side) the list of pieces that are still on the bord:
 
