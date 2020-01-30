@@ -1,4 +1,4 @@
-This repo contains a simplified Chess simulation I wrote for for a company as part of my job interview process. 
+This repo contains a simplified Chess simulation I wrote for a company as part of my job interview process. 
 The task at hand was to write a Chess simulator that would receive two players and their respective moves,
 and would determine which of them has won.
 
